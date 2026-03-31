@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #fff;
+            color: #000;
+            font-family: "Courier New";
+            margin: 0;
+            font-size: 12px;
+            font-weight: 300;
+            padding: 5px;
+            overflow-y: scroll;
+            word-break: break-all;
+            scroll-behavior: smooth;
+            max-height: 90vh !important;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .terminal-line {
+            margin-bottom: 5px;
+        }
+        #progress-container {
+            display: none;
+            width: 100%;
+            background: #3D3D3D;
+            height: 5px;
+            margin-top: 4px;
+            padding: 0.5px;
+            margin-bottom: 10px;
+        }
+        #progress-bar {
+            width: 0%;
+            background: #000fff;
+            transition: width 0.3s;
+            text-align: center;
+            color: #000;
+            font-size: 8px;
+            line-height: 6px;
+            font-weight: bold;
+        }
+
+        .terminal-line {
+            width: 100%;
+            line-height: 1.5;
+        }
+        .primary {
+            color: #E2EA95;
+        }
+        #paths {
+            color: #95E7E4 !important;
+        }
+        .prompt {
+            color: #50C878;
+            /* Emerald Green accent */
+            margin-right: 2px;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+        .input-area {
+            display: inline;
+            /* Menempel setelah prompt */
+            color: #000;
+            outline: none;
+            word-break: break-all;
+            /* Memecah kata jika terlalu panjang */
+            white-space: pre-wrap;
+            /* Menjaga spasi tetap terbaca */
+            caret-color: #50C878;
+            /* Warna kursor */
+            text-transform: lowercase;
+        }
+        .input-area:empty::before {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            margin-top: -2px;
+            background-color: #50C878;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+        .input-ar2ea {
+            display: inline;
+            /* Menempel setelah prompt */
+            color: #000fff;
+            outline: none;
+            word-break: break-all;
+            /* Memecah kata jika terlalu panjang */
+            white-space: pre-wrap;
+            /* Menjaga spasi tetap terbaca */
+            caret-color: #50C878;
+            /* Warna kursor */
+            text-transform: lowercase;
+        }
+        .input-ar2ea:empty::before {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 1.4em;
+            margin-top: -2px;
+            background-color: #50C878;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+        .input-ar3ea {
+            display: inline;
+            /* Menempel setelah prompt */
+            color: #000fff;
+            outline: none;
+            word-break: break-all;
+            /* Memecah kata jika terlalu panjang */
+            white-space: pre-wrap;
+            /* Menjaga spasi tetap terbaca */
+            caret-color: #50C878;
+            /* Warna kursor */
+            text-transform: lowercase;
+        }
+        .input-ar3ea:empty::before {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 1.4em;
+            margin-top: -2px;
+            background-color: #50C878;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+        #pswd {
+            color: #000;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+        .mb-1 {
+            margin: 5px 0;
+        }
+        #users {
+            display: block;
+        }
+        #passwd{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app">
+        <b style="font-weight:700;">Welcome Segay Terminal!</b>
+        <div class="mb-1">
+            <span>(*)</span> Version: V03MARET-0.1.0-Ubuntu
+        </div>
+        <div class="mb-1">
+            <span>(*)</span> Package: https://segay.riosages.web.id/pages
+        </div>
+        <div class="mb-1">
+            <b style="font-weight:700;">Write "help" For Information Used!</b>
+        </div>
+
+        <div id="command-lines"></div>
+        <div id="progress-container">
+            <div id="progress-bar">
+                0%
+            </div>
+        </div>
+    </div>
+    <div id="segay-main">
+        <div id="prompVContainerS" class="terminal-line">
+            <span class="prompt">root@android:~<span id="paths"></span>$</span>
+            <span class="input-area" contenteditable="true" spellcheck="false"></span>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const inputArea = document.querySelector('.input-area');
+        const inputAr2ea = document.querySelector('.input-ar2ea');
+        const inputAr3ea = document.querySelector('.input-ar3ea');
+
+        const areaDirectory = document.getElementById("paths");
+
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const promptsContainer = document.getElementById("prompVContainerS");
+        const currenDirs = "/data/user/0/id.web.riosages.segay/files";
+        function LineHere(path) {
+            let result = path.replace("/storage/emulated/0/", "/");
+            const pathDirs = result.replace(currenDirs, "");
+            areaDirectory.innerText = pathDirs;
+        }
+
+        function prompVContainer(show = true) {
+            if (show) {
+                promptsContainer.style.display = "block";
+            } else {
+                promptsContainer.style.display = "none";
+            }
+        }
+
+        function showProgress(percent) {
+            // Tampilkan container progress
+            progressContainer.style.display = 'block';
+
+            // Update tampilan progress bar
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+
+            if (percent >= 100) {
+                prompVContainer(true);
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                    progressBar.textContent = '0%';
+                }, 1500); // 1.5 detik
+            }
+            // Ketika sudah mencapai atau melewati 100%
+            else {
+                prompVContainer(false);
+            }
+        }
+        function addLine(text) {
+            const terminal = document.getElementById('command-lines');
+            const newLine = document.createElement('div');
+            newLine.className = "lines vold";
+            newLine.innerHTML = text;
+            terminal.appendChild(newLine);
+        }
+        async function pathDefault() {
+            try {
+                await AndroidInterface.pathDefaultDir();
+
+            } catch (e) {
+                addLine("[*] ERR 123: Failer Root Directory");
+            }
+        }
+        function scrollToBottom() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+        async function execute() {
+            const commandLine = inputArea.innerText.trim();
+            if (!commandLine) return;
+
+            const parts = commandLine.split(/\s+/);
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1).join(" ");
+
+
+            if (cmd == "cd") {
+                changeDir();
+            } else {
+                const prefixes = [
+                    `${cmd}`,
+                    `bin/${cmd}`,
+                    `usr/bin/${cmd}`,
+                    `usr/local/bin/${cmd}`,
+                    `usr/bin/${cmd}`,
+                    `usr/sbin/${cmd}`,
+                    `sbin/${cmd}`,
+                    `sh ${currenDirs}/segay/media/bin/${cmd}`,
+                    `sh ${currenDirs}/segay/media/zenoc/${cmd}`
+                ];
+                for (const files of prefixes) {
+                    if(files){
+                        const commandArgs = `${files}`;
+                    }else if (files && args){
+                        const commandArgs = `${files} ${args}`;
+                    }else{
+                        const commandArgs = `${commandLine}`;
+                    }
+                    const fullCommand = `${commandArgs}`;
+
+                    try {
+                        if (typeof AndroidInterface?.cmdExecute === "function") {
+                            
+                            await AndroidInterface.runCommand(fullCommand);
+                        } else {
+                            addLine(`[*] ${fullCommand} 129 ERR: Failed to execute command: ${error.message || error}`);
+                        }
+                    } catch (error) {
+                        addLine(`[*] ${fullCommand}: 129 ERR: Not Found`);
+                    } finally {
+                        scrollToBottom();
+                    }
+                }
+            }
+        }
+
+
+        function clear() {
+            const terminal = document.getElementById('command-lines');
+            if (terminal) {
+                terminal.innerHTML = '';
+            }
+        }
+
+
+        async function changeDir() {
+            const commandLine = inputArea.innerText.trim();
+            if (!commandLine) return;
+
+            // Pisahkan command dan arguments
+            const parts = commandLine.split(/\s+/);
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1).join(" ");
+            const cdCommand = cmd + (args ? " " + args: "");
+            try {
+                await AndroidInterface.moveDirectory(cdCommand);
+            } catch (e) {
+                addLine('[*] ERR 120: Failed Move Directory');
+            }
+        }
+
+        function onCommandResult(result) {
+            addLine(result);
+        }
+        // Event Listener untuk input
+        inputArea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                const command = inputArea.innerText.trim();
+                addLine("<b>root@android~$</b> " + command);
+                if (command == "clear") {
+                    clear();
+                } else {
+                    execute();
+                    setTimeout(scrollToBottom,500);
+                }
+                inputArea.innerText = "";
+                
+            }
+        });
+        pathDefault().then(() => {
+            inputArea.focus();
+        });
+    </script>
+</body>
+</html>
