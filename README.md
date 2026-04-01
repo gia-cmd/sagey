@@ -1,4 +1,4 @@
-### Welcome to Sagey Repository!
+### Welcome Sagey Repository!
 Starting Terminal...
 Script: Java, Node, and Javascript
 
